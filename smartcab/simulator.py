@@ -201,10 +201,17 @@ class Simulator(object):
 
             # Collect metrics from trial
             if self.log_metrics:
+                parameters = self.env.trial_data['parameters']
+                print(parameters)
+                # for key in parameters:
+                #     value = parameters[key]
+                #     if isinstance(value, float):
+                #         parameters[key] = "{:.8f}".format(value)
+
                 self.log_writer.writerow({
                     'trial': trial,
                     'testing': self.env.trial_data['testing'],
-                    'parameters': self.env.trial_data['parameters'],
+                    'parameters': parameters,
                     'initial_deadline': self.env.trial_data['initial_deadline'],
                     'final_deadline': self.env.trial_data['final_deadline'],
                     'net_reward': self.env.trial_data['net_reward'],
