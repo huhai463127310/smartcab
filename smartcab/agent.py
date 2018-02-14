@@ -107,8 +107,18 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Calculate the maximum Q-value of all actions for a given state
-        items = self.Q[state].items()
-        maxQ = items[np.argmax([it[1] for it in items])]
+
+        items = sorted(self.Q[state].items(), key=lambda _: _[1], reverse=True)
+        end_index = 0
+
+        for i in range(1, len(items)):
+            if items[i][1] == items[0][1]:
+                end_index = i
+            else:
+                break
+
+        max_index = random.randint(0, end_index)
+        maxQ = items[max_index]
         # maxQ = max(self.Q[state].values())
 
         # print("state action count: {} {} {}".format(state, len(items), maxQ))
@@ -125,9 +135,7 @@ class LearningAgent(Agent):
         #   Then, for each action available, set the initial Q-value to 0.0
 
         if state not in self.Q:
-            self.Q[state] = dict()
-            for action in self.valid_actions:
-                self.Q[state][action] = 0.0
+            self.Q.setdefault(state, {action: 0.0 for action in self.valid_actions})
         return
 
 
@@ -168,11 +176,11 @@ class LearningAgent(Agent):
         # When learning, implement the value iteration update rule
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
         if self.learning:
-            gamma = 0
-            new_state = self.build_state()
-            self.createQ(new_state)
-            self.Q[state][action] = (1 - self.alpha) * self.Q[state][action] + \
-                                    self.alpha * (reward + gamma * self.get_maxQ(new_state)[1])
+            # gamma = 0
+            # new_state = self.build_state()
+            # self.createQ(new_state)
+            self.Q[state][action] = (1 - self.alpha) * self.Q[state][action]
+            # + self.alpha * (reward + gamma * self.get_maxQ(new_state)[1])
         return
 
     def update(self):
